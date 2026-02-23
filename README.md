@@ -25,6 +25,9 @@ go install github.com/hengin-eer/todome@latest
 ```bash
 todome add 企画書を書く +仕事 @PC
 # 🗡️ タスク #1 を追加した: 企画書を書く +仕事 @PC
+
+# 期限付きタスク
+todome add 請求書処理 +仕事 due:2026-03-01
 ```
 
 ### タスク一覧を表示する
@@ -32,15 +35,36 @@ todome add 企画書を書く +仕事 @PC
 ```bash
 todome list          # 未完了タスクのみ
 todome list --all    # 完了タスクも含めて表示
+todome list --done   # 完了タスクのみ
+todome list --overdue # 期限切れタスクのみ
 todome ls            # list のエイリアス
 ```
 
 ```
- 1. 2026-02-23 企画書を書く +仕事 @PC
+ 1. (A) 2026-02-23 企画書を書く +仕事 @PC due:2026-02-20  [期限切れ!] 
  2. 2026-02-23 牛乳を買う +買い物
- 3. 2026-02-23 レポートを提出する
+ 3. (B) 2026-02-23 レポート due:2026-02-25  [あと2日] 
 
 3 件のタスク
+```
+
+### フィルタリング
+
+```bash
+todome list +仕事              # +仕事 プロジェクトのタスク
+todome list @PC                # @PC コンテキストのタスク
+todome list +仕事 @PC          # AND: +仕事 かつ @PC
+todome list --or +仕事 +個人   # OR: +仕事 または +個人
+todome list -n +仕事           # NOT: +仕事 を除外
+```
+
+### ソート
+
+```bash
+todome list -s priority        # 優先度順（A→B→...→なし）
+todome list -s created         # 作成日順（新しい順）
+todome list -s due             # 期限順（近い順、期限なしは末尾）
+todome list -s priority -r     # 逆順
 ```
 
 ### タスクにトドメを刺す（完了）
@@ -84,7 +108,7 @@ todome rm 1            # delete のエイリアス
 データは [todo.txt 形式](https://github.com/todotxt/todo.txt) のプレーンテキストで保存されます。
 
 ```
-(A) 2026-02-23 企画書を書く +仕事 @PC
+(A) 2026-02-23 企画書を書く +仕事 @PC due:2026-03-01
 x 2026-02-23 2026-02-20 牛乳を買う +買い物
 2026-02-23 レポートを提出する
 ```
@@ -96,6 +120,7 @@ x 2026-02-23 2026-02-20 牛乳を買う +買い物
 | 日付 | `2026-02-23` | 作成日（完了時は完了日 + 作成日） |
 | プロジェクト | `+仕事` | `+` に続くタグ |
 | コンテキスト | `@PC` | `@` に続くタグ |
+| 期限 | `due:2026-03-01` | key:value 形式の期限日 |
 
 ## 設定
 
