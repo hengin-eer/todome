@@ -12,22 +12,22 @@
 
 > Git管理・開発環境を整える。コードを書く前の土台。
 
-- [ ] `.gitignore` 作成（バイナリ、todo.txt、エディタファイル除外）
-- [ ] `git init` & 初回コミット
-- [ ] `LICENSE` ファイル追加（MIT）
-- [ ] エディタ設定（`.editorconfig`）
+- [x] `.gitignore` 作成（バイナリ、todo.txt、エディタファイル除外）
+- [x] `git init` & 初回コミット
+- [x] `LICENSE` ファイル追加（MIT）
+- [x] エディタ設定（`.editorconfig`）
 
 ## Phase 1: 日常利用の品質向上
 
 > 毎日使うツールとしてのストレスを減らす。
 
-- [ ] `~/.config/todome/config.toml` 設定ファイル対応
+- [x] `~/.config/todome/config.toml` 設定ファイル対応
   - デフォルトの `todo.txt` パス指定
   - `done.txt` パス指定
   - 言語設定（日本語/英語メッセージ切り替え、将来用）
-- [ ] `todome archive` コマンド — 完了タスクを `done.txt` に移動
-- [ ] `todome pri <番号> <A-Z>` — 優先度の設定・変更
-- [ ] `todome edit <番号>` — タスク内容のインライン編集（`$EDITOR` 起動 or 引数置換）
+- [x] `todome archive` コマンド — 完了タスクを `done.txt` に移動
+- [x] `todome pri <番号> <A-Z>` — 優先度の設定・変更
+- [x] `todome edit <番号>` — タスク内容のインライン編集（`$EDITOR` 起動 or 引数置換）
 
 ## Phase 2: 検索・フィルタリング
 
