@@ -1,0 +1,21 @@
+# todome バイナリ
+todome
+todome.exe
+
+# タスクデータ（個人データなのでリポジトリに含めない）
+todo.txt
+done.txt
+
+# OS生成ファイル
+.DS_Store
+Thumbs.db
+
+# エディタ
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Go
+dist/
