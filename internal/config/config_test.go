@@ -76,3 +76,34 @@ func TestFilePathDefault(t *testing.T) {
 		t.Errorf("expected %q, got %q", expected, got)
 	}
 }
+
+func TestDataDirPathDefault(t *testing.T) {
+	t.Setenv("XDG_DATA_HOME", "")
+	cfg := DefaultConfig()
+	got := cfg.DataDirPath()
+	home, _ := os.UserHomeDir()
+	expected := filepath.Join(home, ".local", "share", "todome")
+	if got != expected {
+		t.Errorf("expected %q, got %q", expected, got)
+	}
+}
+
+func TestDataDirPathXDG(t *testing.T) {
+	t.Setenv("XDG_DATA_HOME", "/custom/data")
+	cfg := DefaultConfig()
+	got := cfg.DataDirPath()
+	if got != "/custom/data/todome" {
+		t.Errorf("expected '/custom/data/todome', got %q", got)
+	}
+}
+
+func TestDataDirPathFromConfig(t *testing.T) {
+	t.Setenv("XDG_DATA_HOME", "/should/not/use")
+	cfg := Config{DataDir: "~/Dropbox/todome"}
+	got := cfg.DataDirPath()
+	home, _ := os.UserHomeDir()
+	expected := filepath.Join(home, "Dropbox", "todome")
+	if got != expected {
+		t.Errorf("expected %q, got %q", expected, got)
+	}
+}

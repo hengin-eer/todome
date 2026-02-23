@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/hengin-eer/todome/internal/config"
 	"github.com/hengin-eer/todome/internal/store"
@@ -46,6 +45,10 @@ func getStore() *store.FileStore {
 	if path == "" {
 		path = defaultTodoPath()
 	}
+	// Ensure directory exists
+	if dir := filepath.Dir(path); dir != "." {
+		os.MkdirAll(dir, 0o755)
+	}
 	return store.NewFileStore(path)
 }
 
@@ -54,33 +57,16 @@ func defaultTodoPath() string {
 		return env
 	}
 	if appCfg.TodoFile != "" {
-		return expandHome(appCfg.TodoFile)
+		return config.ExpandHome(appCfg.TodoFile)
 	}
-	dir, err := os.Getwd()
-	if err != nil {
-		return "todo.txt"
-	}
-	return filepath.Join(dir, "todo.txt")
+	return filepath.Join(appCfg.DataDirPath(), "todo.txt")
 }
 
 func getDoneFile() string {
 	if appCfg.DoneFile != "" {
-		return expandHome(appCfg.DoneFile)
+		return config.ExpandHome(appCfg.DoneFile)
 	}
-	// done.txt in the same directory as todo.txt
-	todoPath := defaultTodoPath()
-	return filepath.Join(filepath.Dir(todoPath), "done.txt")
-}
-
-func expandHome(path string) string {
-	if strings.HasPrefix(path, "~/") {
-		home, err := os.UserHomeDir()
-		if err != nil {
-			return path
-		}
-		return filepath.Join(home, path[2:])
-	}
-	return path
+	return filepath.Join(appCfg.DataDirPath(), "done.txt")
 }
 
 func exitWithError(msg string) {
