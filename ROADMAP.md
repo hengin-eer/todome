@@ -24,25 +24,31 @@
 - [x] `~/.config/todome/config.toml` 設定ファイル対応
   - デフォルトの `todo.txt` パス指定
   - `done.txt` パス指定
+  - `data_dir` によるデータディレクトリ指定（Dropbox/Syncthing 同期用）
   - 言語設定（日本語/英語メッセージ切り替え、将来用）
+- [x] `todome init` コマンド — 設定ファイルのテンプレート生成
 - [x] `todome archive` コマンド — 完了タスクを `done.txt` に移動
 - [x] `todome pri <番号> <A-Z>` — 優先度の設定・変更
 - [x] `todome edit <番号>` — タスク内容のインライン編集（`$EDITOR` 起動 or 引数置換）
+- [x] XDG 準拠のデフォルトパス — データは `~/.local/share/todome/`、設定は `~/.config/todome/`
+- [x] `Makefile` — `build` / `test` / `install`（`~/.bin/` にコピー） / `uninstall`
 
 ## Phase 2: 検索・フィルタリング
 
 > タスクが増えても目的のタスクにすぐたどり着ける。
 
-- [ ] `todome list +project` — プロジェクトでフィルタ
-- [ ] `todome list @context` — コンテキストでフィルタ
-- [ ] `todome list -s priority` — 優先度順ソート
-- [ ] `todome list --done` / `--undone` — 状態フィルタ（`--all` の細分化）
+- [x] `due:YYYY-MM-DD` 期限対応 — パーサー・表示（期限切れ: 赤背景、3日以内: 黄背景）
+- [x] `todome list +project` — プロジェクトでフィルタ
+- [x] `todome list @context` — コンテキストでフィルタ
+- [x] フィルタの AND / OR (`--or`) / NOT (`-n`) 結合
+- [x] `todome list -s priority|created|due` — ソート（`-r` で逆順）
+- [x] `todome list --done` / `--undone` / `--overdue` — 状態フィルタ
 
 ## Phase 3: 複数端末対応
 
 > Dropbox/Syncthing でファイル同期した環境で安全に使える。
 
-- [ ] 設定ファイルで `todo.txt` パスを `~/Dropbox/todo/todo.txt` 等に指定可能にする（Phase 1 で対応済み）
+- [x] 設定ファイルで `todo.txt` パスを `~/Dropbox/todo/todo.txt` 等に指定可能にする（Phase 1 で対応済み）
 - [ ] ファイルロック機構 — 同時書き込み防止（`flock` ベース）
 - [ ] `todome backup` コマンド — タイムスタンプ付きバックアップ作成
 
