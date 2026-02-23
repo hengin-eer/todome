@@ -8,6 +8,7 @@ type Task struct {
 	Priority    string // "" or "A"-"Z"
 	CompletedAt time.Time
 	CreatedAt   time.Time
+	DueDate     time.Time // due:YYYY-MM-DD
 	Text        string
 	Projects    []string // +project tags
 	Contexts    []string // @context tags

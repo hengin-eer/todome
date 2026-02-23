@@ -103,6 +103,7 @@ func TestRoundTrip(t *testing.T) {
 		"x 2026-02-23 2026-02-20 牛乳を買う +買い物",
 		"2026-02-23 レポートを書く",
 		"シンプルなタスク",
+		"2026-02-23 請求書処理 +仕事 due:2026-03-01",
 	}
 	for _, line := range lines {
 		task := Parse(line)
@@ -110,5 +111,38 @@ func TestRoundTrip(t *testing.T) {
 		if got != line {
 			t.Errorf("roundtrip failed:\n  input:  %q\n  output: %q", line, got)
 		}
+	}
+}
+
+func TestParseDueDate(t *testing.T) {
+	task := Parse("2026-02-23 請求書処理 due:2026-03-01")
+	if task.DueDate.IsZero() {
+		t.Fatal("expected DueDate to be set")
+	}
+	if !task.DueDate.Equal(date(2026, 3, 1)) {
+		t.Errorf("expected due 2026-03-01, got %v", task.DueDate)
+	}
+	if task.Text != "請求書処理 due:2026-03-01" {
+		t.Errorf("expected text to contain due:, got %q", task.Text)
+	}
+}
+
+func TestParseDueDateWithTags(t *testing.T) {
+	task := Parse("(A) 2026-02-23 企画書 +仕事 @PC due:2026-03-15")
+	if !task.DueDate.Equal(date(2026, 3, 15)) {
+		t.Errorf("expected due 2026-03-15, got %v", task.DueDate)
+	}
+	if task.Priority != "A" {
+		t.Errorf("expected priority A, got %q", task.Priority)
+	}
+	if len(task.Projects) != 1 || task.Projects[0] != "仕事" {
+		t.Errorf("expected project '仕事', got %v", task.Projects)
+	}
+}
+
+func TestParseNoDueDate(t *testing.T) {
+	task := Parse("2026-02-23 普通のタスク")
+	if !task.DueDate.IsZero() {
+		t.Errorf("expected no DueDate, got %v", task.DueDate)
 	}
 }

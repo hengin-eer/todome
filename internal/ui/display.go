@@ -2,6 +2,8 @@ package ui
 
 import (
 	"fmt"
+	"math"
+	"time"
 
 	"github.com/hengin-eer/todome/internal/todo"
 )
@@ -14,6 +16,9 @@ const (
 	red    = "\033[31m"
 	gray   = "\033[90m"
 	bold   = "\033[1m"
+
+	bgRedWhite    = "\033[41;37;1m" // 赤背景+白文字+太字
+	bgYellowBlack = "\033[43;30m"   // 黄背景+黒文字
 )
 
 // FormatTask formats a task for display with line number.
@@ -24,12 +29,38 @@ func FormatTask(num int, t todo.Task) string {
 		return prefix + gray + "✓ " + todo.Serialize(t) + reset
 	}
 
+	line := todo.Serialize(t)
 	if t.Priority != "" {
 		color := priorityColor(t.Priority)
-		return prefix + color + todo.Serialize(t) + reset
+		line = color + line + reset
 	}
 
-	return prefix + todo.Serialize(t)
+	if suffix := dueSuffix(t); suffix != "" {
+		line += " " + suffix
+	}
+
+	return prefix + line
+}
+
+func dueSuffix(t todo.Task) string {
+	if t.DueDate.IsZero() || t.Done {
+		return ""
+	}
+	now := time.Now()
+	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.Local)
+	due := time.Date(t.DueDate.Year(), t.DueDate.Month(), t.DueDate.Day(), 0, 0, 0, 0, time.Local)
+	days := int(math.Ceil(due.Sub(today).Hours() / 24))
+
+	switch {
+	case days < 0:
+		return bgRedWhite + " [期限切れ!] " + reset
+	case days == 0:
+		return bgYellowBlack + " [今日まで] " + reset
+	case days <= 3:
+		return bgYellowBlack + fmt.Sprintf(" [あと%d日] ", days) + reset
+	default:
+		return ""
+	}
 }
 
 func priorityColor(p string) string {

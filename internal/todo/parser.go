@@ -12,6 +12,7 @@ const dateFormat = "2006-01-02"
 var (
 	projectRe = regexp.MustCompile(`(?:^|\s)\+(\S+)`)
 	contextRe = regexp.MustCompile(`(?:^|\s)@(\S+)`)
+	dueRe     = regexp.MustCompile(`(?:^|\s)due:(\d{4}-\d{2}-\d{2})(?:\s|$)`)
 )
 
 // Parse parses a single todo.txt line into a Task.
@@ -49,12 +50,17 @@ func Parse(line string) Task {
 		}
 	}
 
-	// 4. Extract +project and @context tags
+	// 4. Extract +project and @context tags, and due date
 	for _, m := range projectRe.FindAllStringSubmatch(s, -1) {
 		t.Projects = append(t.Projects, m[1])
 	}
 	for _, m := range contextRe.FindAllStringSubmatch(s, -1) {
 		t.Contexts = append(t.Contexts, m[1])
+	}
+	if m := dueRe.FindStringSubmatch(s); m != nil {
+		if d, err := time.Parse(dateFormat, m[1]); err == nil {
+			t.DueDate = d
+		}
 	}
 
 	t.Text = strings.TrimSpace(s)
