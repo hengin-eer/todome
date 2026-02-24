@@ -3,15 +3,16 @@ package cmd
 import (
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/spf13/cobra"
 )
 
 var doneCmd = &cobra.Command{
-	Use:   "done <番号>",
+	Use:   "done <番号> [メッセージ]",
 	Short: "タスクにトドメを刺す（完了にする）",
-	Args:  cobra.ExactArgs(1),
+	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		num, err := strconv.Atoi(args[0])
 		if err != nil || num < 1 {
@@ -36,12 +37,21 @@ var doneCmd = &cobra.Command{
 
 		tasks[idx].Done = true
 		tasks[idx].CompletedAt = time.Now()
+		tasks[idx].CompletedHasTime = true
+
+		if len(args) > 1 {
+			tasks[idx].Note = strings.Join(args[1:], " ")
+		}
 
 		if err := s.Save(tasks); err != nil {
 			return fmt.Errorf("保存エラー: %w", err)
 		}
 
-		fmt.Printf("🗡️ タスク #%d にトドメを刺した！「%s」\n", num, tasks[idx].Text)
+		msg := fmt.Sprintf("🗡️ タスク #%d にトドメを刺した！「%s」", num, tasks[idx].Text)
+		if tasks[idx].Note != "" {
+			msg += fmt.Sprintf("\n   📝 %s", tasks[idx].Note)
+		}
+		fmt.Println(msg)
 		return nil
 	},
 }

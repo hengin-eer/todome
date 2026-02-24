@@ -26,7 +26,11 @@ func FormatTask(num int, t todo.Task) string {
 	prefix := fmt.Sprintf("%s%2d.%s ", bold, num, reset)
 
 	if t.Done {
-		return prefix + gray + "✓ " + todo.Serialize(t) + reset
+		line := gray + "✓ " + todo.Serialize(t) + reset
+		if t.Note != "" {
+			line += "\n     " + gray + "📝 " + t.Note + reset
+		}
+		return prefix + line
 	}
 
 	line := todo.Serialize(t)
@@ -47,6 +51,26 @@ func dueSuffix(t todo.Task) string {
 		return ""
 	}
 	now := time.Now()
+
+	if t.DueHasTime {
+		diff := time.Until(t.DueDate)
+		switch {
+		case diff < 0:
+			return bgRedWhite + " [期限切れ!] " + reset
+		case diff < time.Hour:
+			mins := int(diff.Minutes())
+			return bgYellowBlack + fmt.Sprintf(" [あと%d分] ", mins) + reset
+		case diff < 24*time.Hour:
+			hours := int(diff.Hours())
+			return bgYellowBlack + fmt.Sprintf(" [あと%d時間] ", hours) + reset
+		case diff < 3*24*time.Hour:
+			days := int(diff.Hours() / 24)
+			return bgYellowBlack + fmt.Sprintf(" [あと%d日] ", days) + reset
+		default:
+			return ""
+		}
+	}
+
 	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.Local)
 	due := time.Date(t.DueDate.Year(), t.DueDate.Month(), t.DueDate.Day(), 0, 0, 0, 0, time.Local)
 	days := int(math.Ceil(due.Sub(today).Hours() / 24))

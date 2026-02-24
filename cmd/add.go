@@ -24,6 +24,7 @@ var addCmd = &cobra.Command{
 		task := todo.Parse(text)
 		if task.CreatedAt.IsZero() {
 			task.CreatedAt = time.Now()
+			task.CreatedHasTime = true
 		}
 
 		tasks = append(tasks, task)

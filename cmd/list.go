@@ -165,6 +165,8 @@ func sortTasks(tasks []indexedTask, field string, reverse bool) {
 			less = comparePriority(tasks[i].task.Priority, tasks[j].task.Priority)
 		case "created":
 			less = tasks[i].task.CreatedAt.After(tasks[j].task.CreatedAt)
+		case "completed":
+			less = tasks[i].task.CompletedAt.After(tasks[j].task.CompletedAt)
 		case "due":
 			less = compareDue(tasks[i].task.DueDate, tasks[j].task.DueDate)
 		default:
@@ -217,7 +219,7 @@ func init() {
 	listCmd.Flags().BoolVar(&listOverdue, "overdue", false, "期限切れタスクのみ表示する")
 	listCmd.Flags().BoolVar(&listOr, "or", false, "フィルタをOR結合にする")
 	listCmd.Flags().BoolVarP(&listNot, "not", "n", false, "フィルタを除外条件にする")
-	listCmd.Flags().StringVarP(&listSort, "sort", "s", "", "ソート: priority, created, due")
+	listCmd.Flags().StringVarP(&listSort, "sort", "s", "", "ソート: priority, created, due, completed")
 	listCmd.Flags().BoolVarP(&listReverse, "reverse", "r", false, "ソート順を反転する")
 	rootCmd.AddCommand(listCmd)
 }
