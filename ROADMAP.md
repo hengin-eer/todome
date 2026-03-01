@@ -46,6 +46,8 @@
 
 ## Phase 3: 複数端末対応
 
+> 現在は機能追加を優先するので後回し
+
 > Dropbox/Syncthing でファイル同期した環境で安全に使える。
 
 - [x] 設定ファイルで `todo.txt` パスを `~/Dropbox/todo/todo.txt` 等に指定可能にする（Phase 1 で対応済み）
@@ -56,10 +58,13 @@
 
 > 使い心地を磨く。
 
-- [ ] シェル補完スクリプト生成（Cobra 組み込み: `todome completion bash/zsh/fish`）
-- [ ] カラーテーマ設定（設定ファイルで色変更可能に）
+- [ ] `todome edit`: タスク番号を引数に渡さない場合、全てのタスクを編集することが出来る
+  - [ ] 懸念点として、todo.txtをそのまま編集するのが楽だろうが、それができる設計になっているのか？
+- [ ] `todome add "(A) タスクを追加する due:today"など、自然言語を使って期日指定できるようにする
 - [ ] `todome stats` — 統計表示（完了数、今週の進捗など）
 - [ ] `todome undo` — 直前の操作を取り消し
+- [ ] シェル補完スクリプト生成（Cobra 組み込み: `todome completion bash/zsh/fish`）
+- [ ] カラーテーマ設定（設定ファイルで色変更可能に）
 
 ## Phase 5: 配布
 
@@ -69,14 +74,6 @@
 - [ ] GoReleaser でクロスコンパイル & GitHub Releases に自動公開
 - [ ] Homebrew tap リポジトリ作成（`homebrew-tap`）
 - [ ] README にインストール手順・バッジ追加
-
-### セキュリティ上の注意（初心者向け）
-
-GoReleaser + GitHub Releases による配布は安全な方法です:
-- ソースコードは GitHub 上で公開されているので中身が見える
-- バイナリは GitHub Actions 上でビルドされるので改ざんリスクが低い
-- Homebrew tap は自分のリポジトリから配布するだけで、公式 Homebrew に登録する必要はない
-- **やってはいけないこと**: バイナリに API キーや個人情報をハードコードしない
 
 ---
 
